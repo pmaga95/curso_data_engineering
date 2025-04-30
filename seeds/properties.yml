@@ -1,0 +1,7 @@
+version: 2
+
+
+seeds:
+  - name: persona_seed
+    +database: "ALUMNO11_DEV_BRONZE_DB"
+    +schema: "SEEDS"
