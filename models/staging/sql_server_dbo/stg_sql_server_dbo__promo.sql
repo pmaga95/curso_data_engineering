@@ -5,7 +5,7 @@ with src_data as (
 casted_renamed as (
     select 
         PROMO_ID
-        , DISCOUNT::decimal(5,2) as "DISCOUNT %"
+        , DISCOUNT::decimal(5,2) as "DISCOUNT_EURO"
         , STATUS
         , _FIVETRAN_DELETED
         , _FIVETRAN_SYNCED
