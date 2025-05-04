@@ -4,7 +4,10 @@ with src_data as(
             , SHIPPING_COST -- DATATYPE FLOAT
             , ADDRESS_ID -- DATATYPE VARCHAR(256)
             , CREATED_AT -- DATATYPE TIMESTAMP_TZ(9)
-            , PROMO_ID -- DATATYPE VARCHAR(256)
+            , case
+                when PROMO_ID <> '' then PROMO_ID
+                else 'Unknown_promo'
+                end as PROMO_ID -- DATATYPE VARCHAR(256)
             , ESTIMATED_DELIVERY_AT -- DATATYPE TIMESTAMP_TZ(9)
             , ORDER_COST -- DATATYPE FLOAT
             , USER_ID -- DATATYPE VARCHAR(256)
@@ -24,20 +27,22 @@ casted_renamed as(
             , SHIPPING_SERVICE 
             , SHIPPING_COST 
             , ADDRESS_ID 
-            , CREATED_AT 
-            , PROMO_ID 
+            , CREATED_AT
+            , p.PROMO_SK -- the surrogate key for promo_id
             , ESTIMATED_DELIVERY_AT 
             , ORDER_COST::decimal(10,4) as ORDER_COST
             , USER_ID 
             , ORDER_TOTAL::decimal(10,4) as ORDER_TOTAL
             , DELIVERED_AT 
             , TRACKING_ID 
-            , STATUS 
-            , _FIVETRAN_DELETED 
-            ,_FIVETRAN_SYNCED 
-    from src_data 
+            , o.STATUS 
+            , o._FIVETRAN_DELETED 
+            ,o._FIVETRAN_SYNCED 
+    from src_data o
+    inner join {{ ref('stg_sql_server_dbo__promo') }} p
+    on  PROMO_ID  = p.DESC_PROMO
 
-)
+) 
 
 select *
 from casted_renamed
