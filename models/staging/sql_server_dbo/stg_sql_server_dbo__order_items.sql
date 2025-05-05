@@ -10,7 +10,8 @@ casted_renamed as (
         , QUANTITY
         , _FIVETRAN_DELETED
         , _FIVETRAN_SYNCED
-    from src_data
+    from src_data 
+    
 )
 
 select *
