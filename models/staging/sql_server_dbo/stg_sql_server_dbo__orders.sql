@@ -6,6 +6,7 @@ with src_data as(
             , CREATED_AT -- DATATYPE TIMESTAMP_TZ(9)
             , case
                 when PROMO_ID <> '' then PROMO_ID
+                when PROMO_ID is null then 'null_promo_value'
                 else 'Unknown_promo'
                 end as PROMO_ID -- DATATYPE VARCHAR(256)
             , ESTIMATED_DELIVERY_AT -- DATATYPE TIMESTAMP_TZ(9)
@@ -28,19 +29,18 @@ casted_renamed as(
             , SHIPPING_COST 
             , ADDRESS_ID 
             , CREATED_AT
-            , p.PROMO_SK -- the surrogate key for promo_id
+            , PROMO_ID 
             , ESTIMATED_DELIVERY_AT 
             , ORDER_COST::decimal(10,4) as ORDER_COST
             , USER_ID 
             , ORDER_TOTAL::decimal(10,4) as ORDER_TOTAL
             , DELIVERED_AT 
             , TRACKING_ID 
-            , o.STATUS 
-            , o._FIVETRAN_DELETED 
-            ,o._FIVETRAN_SYNCED 
-    from src_data o
-    inner join {{ ref('stg_sql_server_dbo__promo') }} p
-    on  PROMO_ID  = p.DESC_PROMO
+            , STATUS 
+            , _FIVETRAN_DELETED 
+            , _FIVETRAN_SYNCED 
+    from src_data 
+    
 
 ) 
 
