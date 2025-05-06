@@ -1,0 +1,32 @@
+version: 2
+
+models:
+    - name: int_sql_server_dbo__shipment_services
+      description: "The shipment service. that is associate with a order "
+      columns:
+        - name: shipping_service
+          description: "The surrogate key was created through the combination of shipping_service"
+
+        - name: shipping_cost
+          description: "the price of the shipping"
+
+        - name: address_id
+          data_type: varchar
+          description: "the address related to delivery"
+
+        - name: estimated_delivery_at
+          data_type: timestamp_tz
+          description: "the estimated time in timezone"
+
+        - name: delivered_at
+          data_type: timestamp_tz
+          description: "The time that was made the delivery in timezone"
+
+        - name: tracking_id
+          data_type: varchar
+          description: "the code for tracking the shippment"
+
+        - name: status
+          data_type: varchar
+          description: "The order status"
+

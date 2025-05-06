@@ -29,9 +29,8 @@ with_default_record as (
 
 hashed as (
     select 
-          {{ dbt_utils.generate_surrogate_key(['TRACKING_ID','SHIPPING_SERVICE','SHIPPING_COST'])}} as SHIPMENT_ID -- the surrogate key getting through the tracking_id as a unique row
+          {{ dbt_utils.generate_surrogate_key(['SHIPPING_SERVICE'])}} as SHIPPING_SERVICE -- the surrogate key getting through the SHIPPING as a unique row
             , TRACKING_ID
-            , SHIPPING_SERVICE
             , SHIPPING_COST 
             , ADDRESS_ID 
             , ESTIMATED_DELIVERY_AT 

@@ -13,6 +13,8 @@ default_record as (
         , null as _FIVETRAN_DELETED
         , '1998-01-01' as _FIVETRAN_SYNCED
 ),
+--d2fbe240-64ac-4feb-a360-8a9197f8b8ae
+
 -- merge the default row with all products raw
 with_default_record as (
     select *
@@ -36,4 +38,5 @@ casted_renamed as (
 
 select *
 from casted_renamed
+where ADDRESS_ID = 'd2fbe240-64ac-4feb-a360-8a9197f8b8ae'
 
