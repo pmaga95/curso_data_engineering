@@ -3,6 +3,7 @@ with src_data as (
     from {{ source("sql_server_dbo", "users")}}
 ),
 -- this CTE is for getting the orders from source
+/**
 orders as (
     select ORDER_ID
         , USER_ID as CUSTOMER_ID
@@ -19,23 +20,22 @@ customer_orders as (
     from orders
     group by 1
 ),
+**/
 -- making some casting and concat the first and last name to be a unique column
 -- with coalesce we get the total value from the order CTE and if is null then it'll be 0
 casted_renamed as (
     select 
-        USER_ID as CUSTOMER_ID
+        {{ dbt_utils.generate_surrogate_key(['USER_ID']) }} as USER_ID
         , concat(FIRST_NAME,' ',LAST_NAME) as NAME
         , UPDATED_AT 
         , ADDRESS_ID 
         , CREATED_AT 
         , PHONE_NUMBER 
-        , coalesce(co.NUMBER_OF_ORDERS, 0) as TOTAL_ORDERS
+        --, coalesce(co.NUMBER_OF_ORDERS, 0) as TOTAL_ORDERS
         , EMAIL 
         , _FIVETRAN_DELETED 
         , _FIVETRAN_SYNCED 
-    from src_data sd
-    left join customer_orders co
-    on sd.USER_ID = co.CUSTOMER_ID
+    from src_data
 )
 
 

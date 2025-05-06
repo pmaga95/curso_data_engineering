@@ -24,7 +24,7 @@ with src_data as(
 -- let´s change the datatype from those columns to be more representative
 casted_renamed as(
     select 
-            ORDER_ID 
+            {{ dbt_utils.generate_surrogate_key(['ORDER_ID']) }} as ORDER_ID 
             , SHIPPING_SERVICE 
             , SHIPPING_COST 
             , ADDRESS_ID 

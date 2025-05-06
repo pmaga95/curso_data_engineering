@@ -5,7 +5,7 @@ with src_budget as (
 
 renamed_casted as (
     select
-        _row as budget_id -- datatype number(38,0) and is the primary_key
+        {{ dbt_utils.generate_surrogate_key(['month','product_id'])}} as budget_id -- datatype number(38,0) and is the primary_key
         , quantity        -- datatype number(38,0)
         , month           -- datatype date,
         , product_id      -- varchar(256)
