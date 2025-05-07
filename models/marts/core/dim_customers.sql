@@ -1,3 +1,4 @@
+/**
 -- getting data from a users
 with user_base as (
     select 
@@ -49,3 +50,4 @@ select
 ,   ADDRESS_ID
 ,   
 from customer_orders
+**/

@@ -25,16 +25,16 @@ customer_orders as (
 -- with coalesce we get the total value from the order CTE and if is null then it'll be 0
 casted_renamed as (
     select 
-        {{ dbt_utils.generate_surrogate_key(['USER_ID']) }} as USER_ID
-        , concat(FIRST_NAME,' ',LAST_NAME) as NAME
-        , UPDATED_AT 
+        {{ dbt_utils.generate_surrogate_key(['USER_ID']) }} as CUSTOMER_ID
+        , concat(FIRST_NAME,' ',LAST_NAME) as FULL_NAME
+        , UPDATED_AT::timestamp_ntz as CUSTOMER_UPDATE_DATE
         , ADDRESS_ID 
-        , CREATED_AT 
+        , CREATED_AT::timestamp_ntz as CUSTOMER_CREATED_DATE
         , PHONE_NUMBER 
         --, coalesce(co.NUMBER_OF_ORDERS, 0) as TOTAL_ORDERS
         , EMAIL 
-        , _FIVETRAN_DELETED 
-        , _FIVETRAN_SYNCED 
+        , _FIVETRAN_DELETED as DELETE_DATE
+        , _FIVETRAN_SYNCED::timestamp_ntz as LOAD_DATE
     from src_data
 )
 
