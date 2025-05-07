@@ -2,7 +2,7 @@ with src_data as (
     select *
     from {{ source("sql_server_dbo", "addresses")}}
 ),
--- Add the default row 
+-- Add the default rows 
 default_record as (
     select 
         'Unknown_address' as ADDRESS_ID
@@ -13,9 +13,7 @@ default_record as (
         , null as _FIVETRAN_DELETED
         , '1998-01-01' as _FIVETRAN_SYNCED
 ),
---d2fbe240-64ac-4feb-a360-8a9197f8b8ae
-
--- merge the default row with all products raw
+-- merge the default row with all products raws
 with_default_record as (
     select *
     from src_data
@@ -31,12 +29,12 @@ casted_renamed as (
         , COUNTRY
         , ADDRESS as DESC_ADDRES
         , STATE
-        , _FIVETRAN_DELETED
-        , _FIVETRAN_SYNCED
+        , _FIVETRAN_DELETED as DELETE_DATE
+        , _FIVETRAN_SYNCED::timestamp_ntz as LOAD_DATE
     from with_default_record
 )
 
 select *
 from casted_renamed
-where ADDRESS_ID = 'd2fbe240-64ac-4feb-a360-8a9197f8b8ae'
+
 

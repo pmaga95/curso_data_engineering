@@ -5,16 +5,16 @@ with src_data as (
 
 renamed_casted as (
     select 
-            {{dbt_utils.generate_surrogate_key(['EVENT_ID'])}} as EVENT_ID -- use a surrogate key
-          , PAGE_URL
-          , EVENT_TYPE
-          , USER_ID
-          , PRODUCT_ID
-          , SESSION_ID
+            {{dbt_utils.generate_surrogate_key(['EVENT_ID::varchar(256)'])}} as EVENT_ID -- use a surrogate key
+          , PAGE_URL::varchar(256) as WEB_PAGE_URL
+          , EVENT_TYPE::varchar(256) as EVENT_TYPE
+          , USER_ID::varchar(256) as CUSTOMER_ID
+          , PRODUCT_ID::varchar(256) as PRODUCT_ID
+          , SESSION_ID::varchar(256) as SESSION_ID
           , CREATED_AT
-          , ORDER_ID
-          , _FIVETRAN_DELETED
-          , _FIVETRAN_SYNCED
+          , ORDER_ID::varchar(256)
+          , _FIVETRAN_DELETED as DELETE_DATE
+          , _FIVETRAN_SYNCED::timestamp_ntz as LOAD_DATE
     from src_data
 )
 

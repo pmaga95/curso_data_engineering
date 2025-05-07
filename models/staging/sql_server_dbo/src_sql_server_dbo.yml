@@ -76,6 +76,10 @@ sources:
           - name: order_id
             data_type: varchar
             description: "Unique system identifier for the order that this items belongs to."
+            data_tests:
+              - relationships:
+                  to: source('sql_server_dbo','orders')
+                  field: order_id
           - name: product_id
             data_type: varchar
             description: "identifier of the product included in the order item"

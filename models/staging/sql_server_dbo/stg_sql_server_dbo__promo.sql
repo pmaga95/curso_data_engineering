@@ -20,12 +20,11 @@ with_default_record as (
 ,
 casted_renamed as (
     select 
-        {{ dbt_utils.generate_surrogate_key(['PROMO_ID','DISCOUNT']) }} as PROMO_SK
-        , PROMO_ID as DESC_PROMO
+        {{ dbt_utils.generate_surrogate_key(['PROMO_ID']) }} as PROMO_ID
         , DISCOUNT::decimal(5,2) as DISCOUNT_EURO
-        , STATUS
-        , _FIVETRAN_DELETED
-        , _FIVETRAN_SYNCED
+        , STATUS as PROMO_STATUS
+        , _FIVETRAN_DELETED as DELETE_DATE
+        , _FIVETRAN_SYNCED::timestamp_ntz as LOAD_DATE
     from with_default_record
 )
 
