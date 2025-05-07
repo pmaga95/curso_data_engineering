@@ -27,7 +27,7 @@ casted_renamed as(
             {{ dbt_utils.generate_surrogate_key(['ORDER_ID']) }} as ORDER_ID 
             , SHIPPING_SERVICE 
             , SHIPPING_COST 
-            , a.ADDRESS_ID 
+            , ADDRESS_ID 
             , CREATED_AT
             , PROMO_ID 
             , ESTIMATED_DELIVERY_AT 
@@ -37,11 +37,9 @@ casted_renamed as(
             , DELIVERED_AT 
             , TRACKING_ID 
             , STATUS 
-            , jf._FIVETRAN_DELETED 
-            , jf._FIVETRAN_SYNCED 
-    from src_data jf
-    inner join {{ref('stg_sql_server_dbo__addresses')}} a
-    on jf.ADDRESS_ID = a.ADDRESS_ID    
+            , _FIVETRAN_DELETED 
+            , _FIVETRAN_SYNCED 
+    from src_data    
 
 ) 
 
