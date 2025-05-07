@@ -29,3 +29,7 @@ LEFT JOIN {{ ref("dim_channels")}} AS dchan
                        ON fct.nk_channel_id = dchan.nk_channel_id
 LEFT JOIN {{ ref("dim_products")}} AS dprod
                        ON fct.nk_product_sku = dprod.nk_product_sku
+
+/**
+To fully meet the requirements, two additional calculated metrics, m⁠t⁠r⁠_⁠t⁠o⁠t⁠a⁠⁠l​_⁠a⁠m⁠o⁠u⁠n⁠t⁠_⁠g⁠r⁠o⁠s⁠s and mtr_total_amount_net, are computed based on the product quantity bought (mtr_quantity), the unit price of each product (mtr_unit_price), and the applied discount (mtr_discount).
+**/
