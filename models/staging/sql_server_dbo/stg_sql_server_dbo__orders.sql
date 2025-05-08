@@ -25,7 +25,7 @@ casted_renamed as(
             , SHIPPING_COST::decimal(10,4) as SHIPPING_COST 
             , ADDRESS_ID 
             , CREATED_AT::timestamp_ntz as CREATED_DATE
-            , PROMO_ID
+            , {{ dbt_utils.generate_surrogate_key(['PROMO_ID']) }} as PROMO_ID
             , ESTIMATED_DELIVERY_AT::timestamp_ntz as ESTIMATED_DELIVERY_DATE
             , ORDER_COST::decimal(10,4) as ORDER_COST
             , USER_ID as CUSTOMER_ID

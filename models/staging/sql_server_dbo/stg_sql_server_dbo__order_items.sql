@@ -4,9 +4,9 @@ with src_data as (
 ),
 casted_renamed as (
     select 
-        {{ dbt_utils.generate_surrogate_key(['ORDER_ID','PRODUCT_ID','QUANTITY']) }} as ORDER_ITEM_ID
+        {{ dbt_utils.generate_surrogate_key(['ORDER_ID','PRODUCT_ID']) }} as ORDER_ITEM_ID
         , {{dbt_utils.generate_surrogate_key(['ORDER_ID'])}} as ORDER_ID
-        , PRODUCT_ID
+        , {{dbt_utils.generate_surrogate_key(['PRODUCT_ID'])}} as PRODUCT_ID
         , QUANTITY
         , _FIVETRAN_DELETED as DELETE_DATE
         , _FIVETRAN_SYNCED::timestamp_ntz as LOAD_DATE

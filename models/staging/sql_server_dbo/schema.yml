@@ -129,15 +129,12 @@ models:
   - name: stg_sql_server_dbo__products
     description: "Model that represent the products"
     columns:
-      - name: product_sk
+      - name: product_id
         data_type: varchar
         description: "the surrogate key for the product, got from the combination of product_id, price, name"
         data_tests:
           - unique
           - not_null
-      - name: product_id
-        data_type: varchar
-        description: ""
 
       - name: price
         data_type: number

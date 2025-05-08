@@ -40,11 +40,14 @@ models:
     # Applies to all files under models/staging/
     staging:
       +materialized: view
+      +database: "{{ env_var('DBT_ENVIRONMENTS')}}_SILVER_DB"
       # Applies to all files under models/intermediate/
     intermediate:
       +materialized: view
+      +database: "{{ env_var('DBT_ENVIRONMENTS')}}_SILVER_DB"
       # Applies to all files under models/marts/
     marts:
       +materialized: table
+      +database: "{{ env_var('DBT_ENVIRONMENTS')}}_GOLD_DB"
 
 

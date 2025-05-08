@@ -5,7 +5,7 @@ with src_data as (
 default_record as (
     select 
         'Unknown_promo' as PROMO_ID
-        , -1 as DISCOUNT
+        , 0 as DISCOUNT
         , 'Missing_status' as STATUS
         , null as _FIVETRAN_DELETED
         , '1998-01-01' as _FIVETRAN_SYNCED
