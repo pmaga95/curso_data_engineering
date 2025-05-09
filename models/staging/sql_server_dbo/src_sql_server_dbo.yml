@@ -5,7 +5,7 @@ sources:
   - name: sql_server_dbo # name of the source 
     description: "Source data got from sql_server to our bronze in snowflake "
     schema: sql_server_dbo # this is the schema our raw data lives in
-    database: ALUMNO11_DEV_BRONZE_DB # this is the name of our database
+    database: "{{ env_var('DBT_ENVIRONMENTS')}}_BRONZE_DB" # this is the name of our database
 
     tables:
       - name: addresses

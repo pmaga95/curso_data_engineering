@@ -27,7 +27,7 @@ with_default_record as (
 casted_renamed as(
     select 
           {{ dbt_utils.generate_surrogate_key(['PRODUCT_ID']) }} as PRODUCT_ID
-        , PRICE::decimal(10,4) as PRICE
+        , PRICE::decimal(3) as PRICE
         , NAME as PRODUCT_DESC
         , INVENTORY
         , _FIVETRAN_DELETED as DELETE_DATE
