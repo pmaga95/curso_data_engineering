@@ -21,17 +21,23 @@ with src_data as(
 casted_renamed as(
     select 
             {{ dbt_utils.generate_surrogate_key(['ORDER_ID']) }} as ORDER_ID 
-            , SHIPPING_SERVICE as SHIPPING_COMPANY
-            , SHIPPING_COST::decimal(10,4) as SHIPPING_COST 
+            , case 
+                when SHIPPING_SERVICE <> '' then SHIPPING_SERVICE
+                else 'Not_shipping_company'
+                end as SHIPPING_COMPANY
+            , SHIPPING_COST::decimal(10,2) as SHIPPING_COST 
             , ADDRESS_ID 
             , CREATED_AT::timestamp_ntz as CREATED_DATE
             , {{ dbt_utils.generate_surrogate_key(['PROMO_ID']) }} as PROMO_ID
-            , ESTIMATED_DELIVERY_AT::timestamp_ntz as ESTIMATED_DELIVERY_DATE
-            , ORDER_COST::decimal(10,4) as ORDER_COST
+            , coalesce(ESTIMATED_DELIVERY_AT::timestamp_ntz,'2000-01-01') as ESTIMATED_DELIVERY_DATE
+            , ORDER_COST::decimal(10,2) as ORDER_COST
             , USER_ID as CUSTOMER_ID
-            , ORDER_TOTAL::decimal(10,4) as ORDER_TOTAL
-            , DELIVERED_AT::timestamp_ntz as DELIVERED_DATE
-            , TRACKING_ID
+            , ORDER_TOTAL::decimal(10,2) as ORDER_TOTAL
+            , coalesce(DELIVERED_AT::timestamp_ntz,'2000-01-01') as DELIVERED_DATE
+            , case 
+                when TRACKING_ID <> '' then TRACKING_ID
+                else 'Not_tracking_assigned'
+                end as TRACKING_ID
             , STATUS
             , _FIVETRAN_DELETED as DELETE_DATE
             , _FIVETRAN_SYNCED::timestamp_ntz as LOAD_DATE
