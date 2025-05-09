@@ -47,7 +47,7 @@ models:
       +database: "{{ env_var('DBT_ENVIRONMENTS')}}_SILVER_DB"
       # Applies to all files under models/marts/
     marts:
-      +materialized: table
+      +materialized: view
       +database: "{{ env_var('DBT_ENVIRONMENTS')}}_GOLD_DB"
 
 

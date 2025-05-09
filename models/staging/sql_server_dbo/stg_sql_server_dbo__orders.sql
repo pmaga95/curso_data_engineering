@@ -31,7 +31,7 @@ casted_renamed as(
             , {{ dbt_utils.generate_surrogate_key(['PROMO_ID']) }} as PROMO_ID
             , coalesce(ESTIMATED_DELIVERY_AT::timestamp_ntz,'2000-01-01') as ESTIMATED_DELIVERY_DATE
             , ORDER_COST::decimal(10,2) as ORDER_COST
-            , USER_ID as CUSTOMER_ID
+            , {{ dbt_utils.generate_surrogate_key(['USER_ID']) }} as CUSTOMER_ID
             , ORDER_TOTAL::decimal(10,2) as ORDER_TOTAL
             , coalesce(DELIVERED_AT::timestamp_ntz,'2000-01-01') as DELIVERED_DATE
             , case 
