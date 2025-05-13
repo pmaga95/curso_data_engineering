@@ -8,18 +8,32 @@ order_item as (
     from {{ ref("int_sql_server_dbo__order_items") }}
 ),
 
-order_item_aggregated_per_order as (
+
+fact_order as (
     select
-        ORDER_ITEM_ID
-     ,  sum(TOTAL_PRICE_PER_ITEM) as TOTAL_ITEM_PRICE_ORDERED
-     ,  sum(ITEM_DISCOUNT_AMOUNT_EURO) as GROSS_ITEM_DISCOUNT_AMOUNT_EURO
-     ,  sum(QUANTITY) as QUANTITY_ORDERED
+          ORDER_ITEM_ID
+        , ORDER_ID
+        , PRODUCT_ID
+        , CUSTOMER_ID
+        , PROMO_ID
+        , ADDRESS_ID
+        , SHIPPING_COMPANY
+        , STATUS
+        , CREATED_DATE
+        , ESTIMATED_DELIVERY_DATE
+        , DELIVERED_DATE
+        , SUBTOTAL_ITEM_PER_ORDER
+        , ITEM_DISCOUNT_AMOUNT_EURO
+        , ITEM_SHIPPING_COST_EURO
+        , QUANTITY
     from order_item
-    group by  1 
-),
+    left join orders using(ORDER_ID)
+    
 
-fact_order (
-
+    
 )
+
+select *
+from fact_order
 
 

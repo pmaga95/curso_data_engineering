@@ -8,7 +8,7 @@ default_record as (
         'Unknown_address' as ADDRESS_ID
         , -1 as ZIPCODE
         , 'Missing_country' as COUNTRY
-        , 'Not_desc_address' as DESC_ADDRES
+        , 'Not_desc_address' as DESC_ADDRESS
         , 'Not_state' as STATE
         , null as _FIVETRAN_DELETED
         , '1998-01-01' as _FIVETRAN_SYNCED
@@ -29,9 +29,9 @@ casted_renamed as (
         {{dbt_utils.generate_surrogate_key(['ADDRESS_ID'])}} as ADDRESS_ID
         , ZIPCODE
         , COUNTRY
-        , ADDRESS as DESC_ADDRES
+        , ADDRESS as DESC_ADDRESS
         , STATE
-        , _FIVETRAN_DELETED as DELETED_CREATE
+        , _FIVETRAN_DELETED as DELETED_DATE
         , _FIVETRAN_SYNCED as LOAD_DATE
     from with_default_record
 )

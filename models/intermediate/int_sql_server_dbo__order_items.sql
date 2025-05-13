@@ -24,15 +24,28 @@ orders_order_items_grained as (
        , orders.DELIVERED_DATE
        , order_items.QUANTITY
        , product.PRICE as UNIT_PRICE
-       , (product.PRICE * order_items.QUANTITY) as TOTAL_PRICE_PER_ITEM
-       , orders.ORDER_COST -- this is a total cost from sum up all (item product price * quantity) per order
+       , (product.PRICE * order_items.QUANTITY) as SUBTOTAL_PRICE_PER_ITEM
        ,(
-        ((orders.ORDER_COST + orders.SHIPPING_COST) - orders.ORDER_TOTAL) 
-        * ((product.PRICE * order_items.QUANTITY) / orders.ORDER_COST)    -- the discount per item in this order
+        ((orders.ORDER_COST + orders.SHIPPING_COST) - orders.ORDER_TOTAL) -- total discount per order. (It´s also posible getting that data from a promo table through the promo_id to get the discount)
+        * ((product.PRICE * order_items.QUANTITY) / orders.ORDER_COST)    -- the discount per item in this order distributed proportionally.  This is getting the relative value of product in a order
         )::decimal(10,2) as ITEM_DISCOUNT_AMOUNT_EURO
-       , (orders.ORDER_COST + orders.SHIPPING_COST) - orders.ORDER_TOTAL as TOTAL_DISCOUNT_ORDER
-       , orders.SHIPPING_COST
-       , orders.ORDER_TOTAL
+       ,
+       -- getting the shipping cost per item
+       (
+        orders.SHIPPING_COST
+        * ((product.PRICE * order_items.QUANTITY) / orders.ORDER_COST) 
+        )::decimal(10,2) as ITEM_SHIPPING_COST_EURO
+
+       , (product.PRICE * order_items.QUANTITY) -
+         (
+         ((orders.ORDER_COST + orders.SHIPPING_COST) - orders.ORDER_TOTAL)
+        * ((product.PRICE * order_items.QUANTITY) / orders.ORDER_COST)
+         ) +
+         (
+        orders.SHIPPING_COST
+        * ((product.PRICE * order_items.QUANTITY) / orders.ORDER_COST) 
+        )::decimal(10,2) as SUBTOTAL_ITEM_PER_ORDER
+
     from orders
     inner join order_items
     on orders.ORDER_ID = order_items.ORDER_ID
