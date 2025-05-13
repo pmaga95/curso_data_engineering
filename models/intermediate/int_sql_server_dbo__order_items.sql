@@ -1,14 +1,15 @@
+-- getting our orders staging model
 with orders as (
     select * 
     from {{ ref("stg_sql_server_dbo__orders")}}
 ),
-
+-- getting our order_items staging model
 order_items as (
     select *
     from {{ ref("stg_sql_server_dbo__order_items")}}
 )
 ,
-final as (
+orders_order_items_grained as (
     select
          order_items.ORDER_ITEM_ID
        , orders.ORDER_ID
@@ -22,16 +23,29 @@ final as (
        , orders.ESTIMATED_DELIVERY_DATE
        , orders.DELIVERED_DATE
        , order_items.QUANTITY
-       , orders.ORDER_COST -- this is a total cost from sum up all (item product price * quantity) per order
-       , product.PRICE
-       , (orders.ORDER_COST + orders.SHIPPING_COST) - orders.ORDER_TOTAL as TOTAL_DISCOUNT_ORDER
-       -- Distribuited discount per item
+       , product.PRICE as UNIT_PRICE
+       , (product.PRICE * order_items.QUANTITY) as SUBTOTAL_PRICE_PER_ITEM
        ,(
-        ((orders.ORDER_COST + orders.SHIPPING_COST) - orders.ORDER_TOTAL) -- total discount
-        * ((product.PRICE * order_items.QUANTITY) / orders.ORDER_COST)    -- the discount per item in this order
-        )::decimal(10,2) as ITEM_DISCOUNT_EURO
-       , orders.SHIPPING_COST
-       , orders.ORDER_TOTAL
+        ((orders.ORDER_COST + orders.SHIPPING_COST) - orders.ORDER_TOTAL) -- total discount per order. (It´s also posible getting that data from a promo table through the promo_id to get the discount)
+        * ((product.PRICE * order_items.QUANTITY) / orders.ORDER_COST)    -- the discount per item in this order distributed proportionally.  This is getting the relative value of product in a order
+        )::decimal(10,2) as ITEM_DISCOUNT_AMOUNT_EURO
+       ,
+       -- getting the shipping cost per item
+       (
+        orders.SHIPPING_COST
+        * ((product.PRICE * order_items.QUANTITY) / orders.ORDER_COST) 
+        )::decimal(10,2) as ITEM_SHIPPING_COST_EURO
+
+       , (product.PRICE * order_items.QUANTITY) -
+         (
+         ((orders.ORDER_COST + orders.SHIPPING_COST) - orders.ORDER_TOTAL)
+        * ((product.PRICE * order_items.QUANTITY) / orders.ORDER_COST)
+         ) +
+         (
+        orders.SHIPPING_COST
+        * ((product.PRICE * order_items.QUANTITY) / orders.ORDER_COST) 
+        )::decimal(10,2) as SUBTOTAL_ITEM_PER_ORDER
+
     from orders
     inner join order_items
     on orders.ORDER_ID = order_items.ORDER_ID
@@ -42,4 +56,4 @@ final as (
 )
 
 select * 
-from final
+from orders_order_items_grained
