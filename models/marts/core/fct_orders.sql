@@ -11,23 +11,23 @@ order_item as (
 
 fact_order as (
     select
-          ORDER_ITEM_ID
-        , ORDER_ID
-        , PRODUCT_ID
-        , CUSTOMER_ID
-        , PROMO_ID
-        , ADDRESS_ID
-        , SHIPPING_COMPANY
-        , STATUS
-        , CREATED_DATE
-        , ESTIMATED_DELIVERY_DATE
-        , DELIVERED_DATE
-        , SUBTOTAL_ITEM_PER_ORDER
-        , ITEM_DISCOUNT_AMOUNT_EURO
-        , ITEM_SHIPPING_COST_EURO
-        , QUANTITY
+          order_item_id
+        , order_id
+        , product_id
+        , customer_id
+        , promo_id
+        , address_id
+        , shipping_company
+        , status
+        , order_created_at
+        , estimated_delivery_at
+        , order_delivered_at
+        , subtotal_item_per_order
+        , item_discount_amount_euro
+        , item_shipping_cost_euro
+        , quantity
     from order_item
-    left join orders using(ORDER_ID)
+    left join orders using(order_id)
     
 
     

@@ -5,12 +5,13 @@ with products as (
 , 
 stg_budget as (
     select 
-          PRODUCT_ID
-        , MONTH
-        , LOADED_TIMESTAMP
-        , QUANTITY
+          product_id
+        , month
+        , quantity
+        , loaded_at
+        
     from {{ ref("stg_google_sheets__budget") }} as budget
-    left join products using(PRODUCT_ID)
+    left join products using(product_id)
 )
 
 select *

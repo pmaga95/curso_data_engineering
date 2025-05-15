@@ -1,10 +1,10 @@
 with stg_promo as(
     select 
-        PROMO_ID
-      , PROMO_STATUS
-      , DISCOUNT_EURO
-      , DELETE_DATE
-      , LOAD_DATE
+        promo_id
+      , promo_status
+      , discount_euro
+      , is_data_deleted
+      , loaded_at
     from {{ ref('stg_sql_server_dbo__promo') }}
 )
 
