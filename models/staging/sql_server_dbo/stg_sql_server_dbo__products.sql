@@ -5,12 +5,12 @@ with src_data as (
 -- Add the default row 
 default_record as (
     select 
-        'Unknown_prduct' as PRODUCT_ID
-        , -1 as PRICE
-        , 'Missing_name' as NAME
-        , -1 as INVENTORY
-        , null as _FIVETRAN_DELETED
-        , '1998-01-01' as _FIVETRAN_SYNCED
+        'Unknown_prduct' as product_id
+        , -1 as price
+        , 'Missing_name' as name
+        , -1 as inventory
+        , null as _fivetran_deleted
+        , '1998-01-01' as _fivetran_synced
 ),
 -- merge the default row with all products raw
 with_default_record as (
@@ -22,16 +22,16 @@ with_default_record as (
 )
 ,
 
--- uniqueness for product: we're gonna choose the product_id, price and name
+-- uniqueness for product: we're gonna choose the product_id as a surrogate key
 
 casted_renamed as(
     select 
-          {{ dbt_utils.generate_surrogate_key(['PRODUCT_ID']) }} as PRODUCT_ID
-        , PRICE::decimal(3) as PRICE
-        , NAME as PRODUCT_DESC
-        , INVENTORY
-        , _FIVETRAN_DELETED as DELETE_DATE
-        , _FIVETRAN_SYNCED::timestamp_ntz as LOAD_DATE
+          {{ dbt_utils.generate_surrogate_key(['product_id']) }} as product_id
+        , price::decimal(3) as price
+        , name as desc_product
+        , inventory
+        , _fivetran_deleted as is_data_deleted
+        , _fivetran_synced::timestamp_ntz as loaded_at
     from with_default_record
 )
 

@@ -1,18 +1,18 @@
 with stg_customer as (
     select 
-        customer.CUSTOMER_ID
-      , FULL_NAME
-      , ADDRESS_ID
-      , EMAIL
-      , PHONE_NUMBER
-      , CUSTOMER_UPDATE_DATE
-      , CUSTOMER_CREATED_DATE
-      , DELETE_DATE
-      , LOAD_DATE
-      , NUMBER_OF_ORDERS
+        customer.customer_id
+      , full_name
+      , address_id
+      , email
+      , phone_number
+      , customer_update_at
+      , customer_created_at
+      , is_data_deleted
+      , loaded_at
+      , total_orders
     from {{ref('stg_sql_server_dbo__users')}} customer
     inner join {{ ref("int_sql_server_dbo__customer_refined") }} refined_customer
-    on customer.CUSTOMER_ID = refined_customer.CUSTOMER_ID
+    using(customer_id)
 )
 
 select *

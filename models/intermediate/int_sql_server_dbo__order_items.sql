@@ -11,47 +11,47 @@ order_items as (
 ,
 orders_order_items_grained as (
     select
-         order_items.ORDER_ITEM_ID
-       , orders.ORDER_ID
-       , orders.CUSTOMER_ID
-       , order_items.PRODUCT_ID
-       , orders.STATUS
-       , orders.SHIPPING_COMPANY
-       , orders.ADDRESS_ID
-       , orders.CREATED_DATE
-       , orders.PROMO_ID
-       , orders.ESTIMATED_DELIVERY_DATE
-       , orders.DELIVERED_DATE
-       , order_items.QUANTITY
-       , product.PRICE as UNIT_PRICE
-       , (product.PRICE * order_items.QUANTITY) as SUBTOTAL_PRICE_PER_ITEM
+         order_items.order_item_id
+       , orders.order_id
+       , orders.customer_id
+       , order_items.product_id
+       , orders.status
+       , orders.shipping_company
+       , orders.address_id
+       , orders.order_created_at
+       , orders.promo_id
+       , orders.estimated_delivery_at
+       , orders.order_delivered_at
+       , order_items.quantity
+       , product.price as unit_price
+       , (product.price * order_items.quantity) as subtotal_price_per_item
        ,(
-        ((orders.ORDER_COST + orders.SHIPPING_COST) - orders.ORDER_TOTAL) -- total discount per order. (It´s also posible getting that data from a promo table through the promo_id to get the discount)
-        * ((product.PRICE * order_items.QUANTITY) / orders.ORDER_COST)    -- the discount per item in this order distributed proportionally.  This is getting the relative value of product in a order
-        )::decimal(10,2) as ITEM_DISCOUNT_AMOUNT_EURO
+        ((orders.order_cost + orders.shipping_cost) - orders.order_total) -- total discount per order. (It´s also posible getting that data from a promo table through the promo_id to get the discount)
+        * ((product.price * order_items.quantity) / orders.order_cost)    -- the discount per item in this order distributed proportionally.  This is getting the relative value of product in a order
+        )::decimal(10,2) as item_discount_amount_euro
        ,
        -- getting the shipping cost per item
        (
-        orders.SHIPPING_COST
-        * ((product.PRICE * order_items.QUANTITY) / orders.ORDER_COST) 
-        )::decimal(10,2) as ITEM_SHIPPING_COST_EURO
+        orders.shipping_cost
+        * ((product.price * order_items.quantity) / orders.order_cost) 
+        )::decimal(10,2) as item_shipping_cost_euro
 
-       , (product.PRICE * order_items.QUANTITY) -
+       , (product.price * order_items.quantity) +
          (
-         ((orders.ORDER_COST + orders.SHIPPING_COST) - orders.ORDER_TOTAL)
-        * ((product.PRICE * order_items.QUANTITY) / orders.ORDER_COST)
+         ((orders.order_cost + orders.shipping_cost) - orders.order_total)
+        * ((product.price * order_items.quantity) / orders.order_cost)
          ) +
          (
-        orders.SHIPPING_COST
-        * ((product.PRICE * order_items.QUANTITY) / orders.ORDER_COST) 
-        )::decimal(10,2) as SUBTOTAL_ITEM_PER_ORDER
+        orders.shipping_cost
+        * ((product.price * order_items.quantity) / orders.order_cost) 
+        )::decimal(10,2) as subtotal_item_per_order
 
     from orders
     inner join order_items
-    on orders.ORDER_ID = order_items.ORDER_ID
+    on orders.order_id = order_items.order_id
     inner join {{ ref("stg_sql_server_dbo__products")}} product
-    on order_items.PRODUCT_ID = product.PRODUCT_ID
-    order by orders.CREATED_DATE
+    on order_items.product_id = product.product_id
+    order by orders.order_created_at
 
 )
 
