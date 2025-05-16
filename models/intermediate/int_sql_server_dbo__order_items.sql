@@ -24,27 +24,18 @@ orders_order_items_grained as (
        , orders.order_delivered_at
        , order_items.quantity
        , product.price as unit_price
-       , (product.price * order_items.quantity) as subtotal_price_per_item
-       ,(
-        ((orders.order_cost + orders.shipping_cost) - orders.order_total) -- total discount per order. (It´s also posible getting that data from a promo table through the promo_id to get the discount)
-        * ((product.price * order_items.quantity) / orders.order_cost)    -- the discount per item in this order distributed proportionally.  This is getting the relative value of product in a order
-        )::decimal(10,2) as item_discount_amount_euro
-       ,
+      -- ,(
+      --  ((orders.order_cost + orders.shipping_cost) - orders.order_total) -- total discount per order. (It´s also posible getting that data from a promo table through the promo_id to get the discount)
+       -- * ((product.price * order_items.quantity) / orders.order_cost)    -- the discount per item in this order distributed proportionally.  This is getting the relative value of product in a order
+      --  )::decimal(10,2) as item_discount_amount_euro
+      -- ,
        -- getting the shipping cost per item
-       (
-        orders.shipping_cost
-        * ((product.price * order_items.quantity) / orders.order_cost) 
-        )::decimal(10,2) as item_shipping_cost_euro
+       --(
+       -- orders.shipping_cost
+      --  * ((product.price * order_items.quantity) / orders.order_cost) 
+       -- )::decimal(10,2) as item_shipping_cost_euro
 
-       , (product.price * order_items.quantity) +
-         (
-         ((orders.order_cost + orders.shipping_cost) - orders.order_total)
-        * ((product.price * order_items.quantity) / orders.order_cost)
-         ) +
-         (
-        orders.shipping_cost
-        * ((product.price * order_items.quantity) / orders.order_cost) 
-        )::decimal(10,2) as subtotal_item_per_order
+       , product.price * order_items.quantity as subtotal_item_per_order
 
     from orders
     inner join order_items
