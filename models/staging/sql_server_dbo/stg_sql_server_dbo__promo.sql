@@ -21,6 +21,7 @@ with_default_record as (
 casted_renamed as (
     select 
         {{ dbt_utils.generate_surrogate_key(['promo_id']) }} as promo_id
+        , promo_id as desc_promo
         , discount::decimal(3) as discount_euro
         , status as promo_status
         , _fivetran_deleted as is_data_deleted

@@ -46,5 +46,5 @@ orders_order_items_grained as (
 
 )
 
-select * 
+select distinct *
 from orders_order_items_grained

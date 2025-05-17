@@ -5,38 +5,17 @@ models:
     description: ""
     columns:
       - name: address_id
-        data_type: varchar
-        description: ""
-
       - name: zipcode
-        data_type: number
-        description: ""
-
       - name: country
-        data_type: varchar
-        description: ""
-
-      - name: desc_addres
-        data_type: varchar
-        description: ""
-
+      - name: desc_address
       - name: state
-        data_type: varchar
-        description: ""
-
       - name: _fivetran_deleted
-        data_type: boolean
-        description: "The status that check if our record data was deleted in the source system (fivetran)"
-
       - name: _fivetran_synced
-        data_type: timestamp_tz
-        description: ""
 
   - name: stg_sql_server_dbo__order_items
     description: ""
     columns:
       - name: order_item_id
-        data_type: varchar
         description: >
           The surrogate key for order_items models, make that unique applying the combination of order_id, product_id and quantity.
         data_tests:
@@ -44,46 +23,37 @@ models:
           - not_null
 
       - name: order_id
-        data_type: varchar
         description: "The order identifier that belongs order_items"
 
       - name: product_id
-        data_type: varchar
         description: "The product identifier that is in the order_items"
 
       - name: quantity
-        data_type: number
-        description: "The product quantity "
+        description: "The product quantity in a order"
 
-      - name: _fivetran_deleted
-        data_type: boolean
-        description: ""
+      - name: is_data_deleted
 
-      - name: _fivetran_synced
-        data_type: timestamp_tz
-        description: ""
+      - name: loaded_at
+        description: >
+                    The timestamp that was loaded the staging order-item table
+       
 
   - name: stg_sql_server_dbo__orders
     description: "Order model getting all data from the source "
     columns:
       - name: order_id
-        data_type: varchar
         description: "The system order identifier"
 
-      - name: shipping_service
-        data_type: varchar
+      - name: shipping_company
         description: "the name of the shipping service"
 
       - name: shipping_cost
-        data_type: float
-        description: "the price of the shipping"
+        description: "the price of the shipping in order"
 
       - name: address_id
-        data_type: varchar
         description: "the address related to delivery"
 
-      - name: created_at
-        data_type: timestamp_tz
+      - name: order_created_at
         description: "the time that was made the order"
 
       - name: promo_id
@@ -91,137 +61,107 @@ models:
         description: "the system identifier for the promo"
 
       - name: estimated_delivery_at
-        data_type: timestamp_tz
-        description: "the estimated time in timezone"
+        description: "the estimated time of delivery in a utc"
 
       - name: order_cost
-        data_type: number
         description: "the price of the order without the shipping and the promo cost"
 
       - name: user_id
-        data_type: varchar
-        description: "The user who made de orderT"
+        description: "The user who made de order"
 
       - name: order_total
-        data_type: number
         description: "The total of the price including the shipping and the promo cost"
 
       - name: delivered_at
-        data_type: timestamp_tz
-        description: "The time that was made the delivery in timezone"
+        description: "The time that was made the delivery in utc"
 
       - name: tracking_id
-        data_type: varchar
         description: "the code for tracking the shippment"
 
       - name: status
-        data_type: varchar
         description: "The order status"
 
-      - name: _fivetran_deleted
-        data_type: boolean
+      - name: is_data_deleted
         description: "The status that check if our record data was deleted in the source system (fivetran)"
 
-      - name: _fivetran_synced
-        data_type: timestamp_tz
-        description: ""
+      - name: loaded_at
 
   - name: stg_sql_server_dbo__products
     description: "Model that represent the products"
     columns:
       - name: product_id
-        data_type: varchar
-        description: "the surrogate key for the product, got from the combination of product_id, price, name"
+        description: "the surrogate key for the product, got from the product_id in the source"
         data_tests:
           - unique
           - not_null
 
       - name: price
-        data_type: number
-        description: ""
+        data_type: decimal
 
-      - name: name
-        data_type: varchar
-        description: ""
+      - name: desc_product
+        description: "The name of the product"
 
       - name: inventory
-        data_type: number
-        description: ""
 
-      - name: _fivetran_deleted
-        data_type: boolean
+      - name: is_data_deleted
         description: "The status that check if our record data was deleted in the source system (fivetran)"
 
-      - name: _fivetran_synced
-        data_type: timestamp_tz
-        description: ""
+      - name: loaded_at
 
   - name: stg_sql_server_dbo__promo
     description: ""
     columns:
-      - name: promo_sk
-        data_type: varchar
-        description: ""
+      - name: promo_id
+        description: "The surrogate key for promo"
 
       - name: desc_promo
         data_type: varchar
-        description: ""
+        description: "Descriptions of promo"
 
       - name: discount_euro
-        data_type: number
-        description: ""
+        data_type: decimal
+        description: "Promo's discount value."
 
-      - name: status
-        data_type: varchar
-        description: ""
+      - name: promo_status
+        description: "Two types of status: active or inactive."
 
-      - name: _fivetran_deleted
-        data_type: boolean
+      - name: is_data_deleted
         description: "The status that check if our record data was deleted in the source system (fivetran)"
 
-      - name: _fivetran_synced
-        data_type: timestamp_tz
-        description: ""
+      - name: loaded_at
 
   - name: stg_sql_server_dbo__users
-    description: ""
+    description: "We're gonna theat the user as a customer throughout the project"
     columns:
       - name: customer_id
-        data_type: varchar
-        description: ""
+        data_tests:
+          - unique
+          - not_null
 
-      - name: name
-        data_type: varchar
-        description: ""
+      - name: full_name
+        description: "The first and lastname of the customer"
 
-      - name: updated_at
-        data_type: timestamp_tz
-        description: ""
+      - name: customer_updated_at
+        description: "The time in UTC that the register of the customer was updated"
+
+      - name: customer_created_at
+        description: "The time in UTC that the customer was created"
 
       - name: address_id
-        data_type: varchar
-        description: ""
-
-      - name: created_at
-        data_type: timestamp_tz
-        description: ""
+        description: "Customer address"
+        data_tests:
+          - relationships:
+              to: ref('stg_server_dbo__addresses')
+              field: address_id
 
       - name: phone_number
-        data_type: varchar
-        description: ""
-
-      - name: total_orders
-        data_type: number
-        description: ""
+        description: "Customer's phone number"
 
       - name: email
         data_type: varchar
-        description: ""
+        description: "Customer's email"
 
-      - name: _fivetran_deleted
-        data_type: boolean
+      - name: is_data_deleted
         description: "The status that check if our record data was deleted in the source system (fivetran)"
 
-      - name: _fivetran_synced
-        data_type: timestamp_tz
-        description: ""
+      - name: loaded_at
