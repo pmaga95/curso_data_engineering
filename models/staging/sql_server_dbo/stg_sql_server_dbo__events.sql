@@ -20,3 +20,8 @@ renamed_casted as (
 
 select *
 from renamed_casted
+
+
+
+
+

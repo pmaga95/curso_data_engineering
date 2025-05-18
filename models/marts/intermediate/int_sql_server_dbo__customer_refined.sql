@@ -7,6 +7,8 @@ with
 -- And on this we're gonna get the total order related for each customer to fill out
 -- the column TOTAL_ORDERS
 -- from the table users
-select customer_id, count(order_id) as total_orders
+select 
+    customer_id, 
+    count(order_id) as total_orders
 from orders
 group by 1

@@ -1,39 +1,52 @@
+-- getting our orders staging model
 with orders as (
     select * 
-    from {{ ref("stg_sql_server_dbo__orders") }}
+    from {{ ref("stg_sql_server_dbo__orders")}}
 ),
-
-order_item as (
+-- getting our order_items staging model
+order_items as (
     select *
-    from {{ ref("int_sql_server_dbo__order_items") }}
-),
-
-
-fact_order as (
+    from {{ ref("stg_sql_server_dbo__order_items")}}
+)
+,
+order_items_grained as (
     select
-          order_item_id
-        , order_id
-        , product_id
-        , customer_id
-        , promo_id
-        , address_id
-        , shipping_company
-        , status
-        , order_created_at
-        , estimated_delivery_at
-        , order_delivered_at
-        , subtotal_item_per_order
-        , item_discount_amount_euro
-        , item_shipping_cost_euro
-        , quantity
-    from order_item
-    left join orders using(order_id)
-    
+         order_items.order_item_id
+       , orders.order_id
+       , orders.customer_id
+       , order_items.product_id
+       , orders.status
+       , orders.shipping_company
+       , orders.address_id
+       , orders.order_created_at
+       , orders.promo_id
+       , orders.estimated_delivery_at
+       , orders.order_delivered_at
+       , order_items.quantity
+       , product.price as unit_price
+      -- ,(
+      --  ((orders.order_cost + orders.shipping_cost) - orders.order_total) -- total discount per order. (It´s also posible getting that data from a promo table through the promo_id to get the discount)
+       -- * ((product.price * order_items.quantity) / orders.order_cost)    -- the discount per item in this order distributed proportionally.  This is getting the relative value of product in a order
+      --  )::decimal(10,2) as item_discount_amount_euro
+      -- ,
+       -- getting the shipping cost per item
+       --(
+       -- orders.shipping_cost
+      --  * ((product.price * order_items.quantity) / orders.order_cost) 
+       -- )::decimal(10,2) as item_shipping_cost_euro
 
-    
+       , product.price * order_items.quantity as subtotal_item_per_order
+
+    from orders
+    left join order_items
+    using(order_id)
+    left join {{ ref("stg_sql_server_dbo__products")}} product
+    using(product_id)
+    order by orders.order_created_at
+
 )
 
 select *
-from fact_order
+from order_items_grained
 
 
