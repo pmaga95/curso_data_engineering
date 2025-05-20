@@ -27,9 +27,12 @@ casted_renamed as(
                 else 'Not_shipping_company'
                 end as shipping_company
             , shipping_cost::decimal(10,2) as shipping_cost
-            , address_id
+            , {{ dbt_utils.generate_surrogate_key(['address_id']) }} as address_id
             , created_at::timestamp_ntz as order_created_at
-            , {{ dbt_utils.generate_surrogate_key(['promo_id']) }} as promo_id
+            , case 
+                when promo_id <> '' then {{ dbt_utils.generate_surrogate_key(['promo_id']) }}
+                else {{ dbt_utils.generate_surrogate_key(["'Unknown_promo'"]) }}
+                end as promo_id
             , coalesce(estimated_delivery_at::timestamp_ntz,'2000-01-01') as estimated_delivery_at
             , order_cost::decimal(10,2) as order_cost
             , {{ dbt_utils.generate_surrogate_key(['user_id']) }} as customer_id

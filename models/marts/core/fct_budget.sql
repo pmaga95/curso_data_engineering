@@ -1,6 +1,6 @@
 with products as (
     select *
-    from {{ ref("dim_products")}}
+    from {{ ref("stg_sql_server_dbo__products")}}
 )
 , 
 stg_budget as (
