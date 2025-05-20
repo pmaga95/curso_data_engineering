@@ -9,15 +9,15 @@ models:
       - name: country
       - name: desc_address
       - name: state
-      - name: _fivetran_deleted
-      - name: _fivetran_synced
+      - name: is_data_deleted
+      - name: data_loaded
 
   - name: stg_sql_server_dbo__order_items
     description: ""
     columns:
       - name: order_item_id
         description: >
-          The surrogate key for order_items models, make that unique applying the combination of order_id, product_id and quantity.
+          The surrogate key for order_items models, make that unique applying the combination of order_id, product_id.
         data_tests:
           - unique
           - not_null
