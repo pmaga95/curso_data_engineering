@@ -1,14 +1,38 @@
 with stg_events as (
     select
-            session_id
-          , min(event_created_at) as session_start
-          , max(event_created_at) as session_end
-          , count(*) as total_events
-          , count(distinct case when event_type = 'page_view' then web_page_url end) as page_visited
-          , count(distinct case when event_type = 'checkout' then order_id end) as orders_placed
+          event_id
+        , customer_id
+        , session_id
+        , event_type
+        , product_id
+        , order_id
+        , web_page_url
+        , event_created_at
+        , loaded_at
+        , is_data_deleted
+        
     from {{ ref('stg_sql_server_dbo__events') }}
-    group by 1
-    )
+    ),
+
+-- derived date field
+derived_date as (
+select
+      events.event_id
+    , events.customer_id
+    , events.session_id
+    , events.event_type
+    , events.product_id
+    , events.order_id
+    , events.web_page_url
+    , events.event_created_at
+    -- Optional derived fields
+    , cast(events.event_created_at as date) as event_date
+    , {{ dbt_date.week_start('events.event_created_at') }} as event_week
+    , events.loaded_at
+from stg_events events
+)
 
 select * 
-from stg_events
+from derived_date
+
+

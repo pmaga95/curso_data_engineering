@@ -1,9 +1,14 @@
-with src_data_inv as (
+with src_data as (
     select *
     from {{ source("sql_server_dbo", "events") }}
 )
 
 
+select * 
+from src_data
+group by session_id
+
+/**
 select 
     session_id,
     created_at,
@@ -22,3 +27,4 @@ select
     ) as event_duration_seconds
     
 from src_data_inv
+**/
