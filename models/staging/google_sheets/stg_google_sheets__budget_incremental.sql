@@ -1,6 +1,7 @@
 {{ config(
     materialized='incremental',
-    unique_key = '_row'
+    unique_key = '_row',
+    on_schema_change='fail'
     ) 
     }}
 
