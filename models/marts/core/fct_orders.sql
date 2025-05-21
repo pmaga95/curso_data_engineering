@@ -1,12 +1,24 @@
+{{ config(
+    materialized = 'incremental',
+    unique_key = ['order_id', 'product_id'], 
+    on_schema_change = 'fail'
+) }}
+
 -- getting our orders staging model
 with orders as (
     select * 
     from {{ ref("stg_sql_server_dbo__orders")}}
+    {% if is_incremental() %}
+      where loaded_at > (select max(loaded_at) from {{ this }})
+    {% endif %}
 ),
 -- getting our order_items staging model
 order_items as (
     select *
     from {{ ref("stg_sql_server_dbo__order_items")}}
+    {% if is_incremental() %}
+      where loaded_at > (select max(loaded_at) from {{ this }})
+    {% endif %}
 )
 ,
 order_items_grained as (

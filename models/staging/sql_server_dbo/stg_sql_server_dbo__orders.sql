@@ -1,3 +1,9 @@
+{{ config(
+    materialized='incremental',
+    unique_key='order_id',
+    on_schema_change='fail'
+)
+}}
 with src_data as(
     select 
             order_id 
@@ -16,6 +22,7 @@ with src_data as(
             , _fivetran_deleted
             ,_fivetran_synced
     from {{ source("sql_server_dbo", "orders")}}
+    
 
 ),
 -- let´s change the datatype from those columns to be more representative
@@ -52,3 +59,6 @@ casted_renamed as(
 
 select *
 from casted_renamed
+{% if is_incremental() %}
+        where loaded_at > (select max(loaded_at) from {{ this }} )
+{% endif %}

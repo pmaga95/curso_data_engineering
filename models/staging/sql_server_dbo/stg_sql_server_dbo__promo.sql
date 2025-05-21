@@ -1,3 +1,4 @@
+
 with src_data as (
     select *
     from {{ source("sql_server_dbo", "promos") }}

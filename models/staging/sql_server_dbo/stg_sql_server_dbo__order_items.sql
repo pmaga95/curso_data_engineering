@@ -1,6 +1,14 @@
+{{ config(
+    materialized='incremental',
+    unique_key = ['order_id','product_id'],
+    on_schema_change='fail',
+    tags = ["incremental_orders"],
+)
+    }}
 with src_data as (
     select *
     from {{ source("sql_server_dbo", "order_items") }}
+   
 ),
 casted_renamed as (
     select 
@@ -16,3 +24,8 @@ casted_renamed as (
 
 select *
 from casted_renamed
+  {% if is_incremental() %}
+       where  loaded_at > (select max(loaded_at) from {{ this }}) 
+{% endif %}
+
+
