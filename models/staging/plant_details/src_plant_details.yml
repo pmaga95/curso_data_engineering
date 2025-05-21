@@ -1,0 +1,24 @@
+version: 2
+
+sources:
+
+  - name: plant # name of the source 
+    description: "Source data got from plant_api schema from our bronze in snowflake "
+    schema: plant_api # this is the schema our raw data lives in
+    database: "{{ env_var('DBT_ENVIRONMENTS')}}_BRONZE_DB" # this is the name of our database
+
+    tables:
+      - name: plant_details
+        description: "All details about the indoor plant"
+        columns:
+          - name: Plant_Name
+            description: "the name of the plant"
+          - name: Preferred_Temperature
+            description: "The temperature in Celcius that is supported by the plant"
+          - name: Humidity
+            description: "The label of the humidity supported by the plant"
+          - name: Light_Requirement
+            description: "The light value accepted by a plant"
+          - name: Climate_summary
+            description: "The appropriated environment of the plant"
+

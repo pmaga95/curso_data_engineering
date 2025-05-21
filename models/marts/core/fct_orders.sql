@@ -22,6 +22,7 @@ order_items_grained as (
        , orders.promo_id
        , orders.estimated_delivery_at
        , orders.order_delivered_at
+       -- facts 
        , order_items.quantity
        , product.price as unit_price
        , product.price * order_items.quantity as subtotal_item_per_order

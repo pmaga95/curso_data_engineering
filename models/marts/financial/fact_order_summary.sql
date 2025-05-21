@@ -14,13 +14,14 @@ order_aggregates as (
     select
           customer_id
         , promo_id
+        -- aggregate by month
         , date_trunc('month', order_date) as order_month
         -- all possible agreggated metrics for customer
         , count(*) as number_of_orders
         , sum(order_total) as total_order_value
         , sum(shipping_cost) as total_shipping_cost
         , sum(order_cost) as total_product_cost
-        , sum(order_total - shipping_cost - order_cost) as total_discount_estimated
+        , abs(sum(order_total - shipping_cost - order_cost)) as total_discount_estimated
 
         , min(order_date) as first_order_date
         , max(order_date) as last_order_date

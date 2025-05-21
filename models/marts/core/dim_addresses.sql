@@ -9,5 +9,5 @@ with stg_addresss as (
     from {{ ref('stg_sql_server_dbo__addresses') }}
 )
 
-select *
+select distinct state
 from stg_addresss
