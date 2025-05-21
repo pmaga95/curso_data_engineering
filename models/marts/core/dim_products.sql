@@ -33,5 +33,5 @@ select
       , loaded_at
 
 from stg_product as product
-left join stg__plant as plant
+left join stg_plant as plant
 on product.desc_product = plant.plant_name
