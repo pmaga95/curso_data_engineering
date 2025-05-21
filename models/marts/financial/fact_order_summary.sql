@@ -1,3 +1,4 @@
+
 with stg_orders as (
     select
           order_id
