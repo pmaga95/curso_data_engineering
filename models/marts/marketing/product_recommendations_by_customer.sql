@@ -1,10 +1,10 @@
 with customer_location as (
     select
-        address_id
+        customer.address_id
       , customer_id
       , state
     from {{ ref('dim_customers')}} customer
-    inner join {{ ref('dim_addresses')}} address
+    left join {{ ref('dim_addresses')}} address
     using(address_id)
 ),
 
@@ -14,7 +14,7 @@ location_weather as (
         , round(avg(avg_temperature_c)) as avg_temperature
         , round(avg(min_temperature_c)) as min_temperature
         , round(avg(max_temperature_c)) as max_temperature
-    from {{ ref('stg__weather') }}
+    from {{ ref('dim_weather') }}
     group by 1
 ),
 

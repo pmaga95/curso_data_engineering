@@ -22,7 +22,7 @@ combined as (
     from recommendations r
     inner join plant_details p on r.product_id = p.product_id
 )
-
+-- count how many times each plant (our product), was recommended to customers
 select
       state
     , desc_product

@@ -1,4 +1,4 @@
-with stg_addresss as (
+with stg_address as (
     select 
           address_id
         , desc_address
@@ -10,4 +10,4 @@ with stg_addresss as (
 )
 
 select distinct state
-from stg_addresss
+from stg_address
