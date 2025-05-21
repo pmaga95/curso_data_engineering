@@ -8,7 +8,7 @@ casted_renamed as (
         {{ dbt_utils.generate_surrogate_key(['user_id']) }} as customer_id
         , concat(first_name,' ',last_name) as full_name
         , updated_at::timestamp_ntz as customer_update_at
-        , address_id
+        , {{ dbt_utils.generate_surrogate_key(['address_id']) }} as address_id
         , created_at::timestamp_ntz as customer_created_at
         , phone_number 
         --, coalesce(co.NUMBER_OF_ORDERS, 0) as TOTAL_ORDERS
