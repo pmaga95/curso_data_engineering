@@ -1,14 +1,15 @@
+
 with src_data as (
     select *
     from {{ source("sql_server_dbo", "promos") }}
 ),
 default_record as (
     select 
-        'Unknown_promo' as PROMO_ID
-        , 0 as DISCOUNT
-        , 'Missing_status' as STATUS
-        , null as _FIVETRAN_DELETED
-        , '1998-01-01' as _FIVETRAN_SYNCED
+        'Unknown_promo' as promo_id
+        , 0 as discount
+        , 'Missing_status' as status
+        , null as _fivetran_deleted
+        , '1998-01-01' as _fivetran_synced
 ),
 with_default_record as (
     select *
@@ -20,11 +21,12 @@ with_default_record as (
 ,
 casted_renamed as (
     select 
-        {{ dbt_utils.generate_surrogate_key(['PROMO_ID']) }} as PROMO_ID
-        , DISCOUNT::decimal(3) as DISCOUNT_EURO
-        , STATUS as PROMO_STATUS
-        , _FIVETRAN_DELETED as DELETE_DATE
-        , _FIVETRAN_SYNCED::timestamp_ntz as LOAD_DATE
+        {{ dbt_utils.generate_surrogate_key(['promo_id']) }} as promo_id
+        , promo_id as desc_promo
+        , discount::decimal(3) as discount_euro
+        , status as promo_status
+        , _fivetran_deleted as is_data_deleted
+        , _fivetran_synced::timestamp_ntz as loaded_at
     from with_default_record
 )
 

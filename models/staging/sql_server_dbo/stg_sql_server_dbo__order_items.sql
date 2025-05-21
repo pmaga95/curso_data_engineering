@@ -1,18 +1,31 @@
+{{ config(
+    materialized='incremental',
+    unique_key = ['order_id','product_id'],
+    on_schema_change='fail',
+    tags = ["incremental_orders"],
+)
+    }}
 with src_data as (
     select *
     from {{ source("sql_server_dbo", "order_items") }}
+   
 ),
 casted_renamed as (
     select 
-        {{ dbt_utils.generate_surrogate_key(['ORDER_ID','PRODUCT_ID']) }} as ORDER_ITEM_ID
-        , {{dbt_utils.generate_surrogate_key(['ORDER_ID'])}} as ORDER_ID
-        , {{dbt_utils.generate_surrogate_key(['PRODUCT_ID'])}} as PRODUCT_ID
-        , QUANTITY
-        , _FIVETRAN_DELETED as DELETE_DATE
-        , _FIVETRAN_SYNCED::timestamp_ntz as LOAD_DATE
+        {{ dbt_utils.generate_surrogate_key(['order_id','product_id']) }} as order_item_id
+        , {{dbt_utils.generate_surrogate_key(['order_id'])}} as order_id
+        , {{dbt_utils.generate_surrogate_key(['product_id'])}} as product_id
+        , quantity
+        , _fivetran_deleted as is_data_deleted
+        , _fivetran_synced::timestamp_ntz as loaded_at
     from src_data 
     
 )
 
 select *
 from casted_renamed
+  {% if is_incremental() %}
+       where  loaded_at > (select max(loaded_at) from {{ this }}) 
+{% endif %}
+
+

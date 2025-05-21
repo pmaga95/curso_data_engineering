@@ -1,46 +1,57 @@
+{{ config(
+    materialized='incremental',
+    unique_key='order_id',
+    on_schema_change='fail'
+)
+}}
 with src_data as(
-    select ORDER_ID -- DATATYPE VARCHAR(256) NOT NULL
-            , SHIPPING_SERVICE -- DATATYPE VARCHAR(256)
-            , SHIPPING_COST -- DATATYPE FLOAT
-            , ADDRESS_ID -- DATATYPE VARCHAR(256)
-            , CREATED_AT -- DATATYPE TIMESTAMP_TZ(9)
-            , PROMO_ID -- DATATYPE VARCHAR(256)
-            , ESTIMATED_DELIVERY_AT -- DATATYPE TIMESTAMP_TZ(9)
-            , ORDER_COST -- DATATYPE FLOAT
-            , USER_ID -- DATATYPE VARCHAR(256)
-            , ORDER_TOTAL -- DATATYPE FLOAT
-            , DELIVERED_AT --DATATYPE TIMESTAMP_TZ(9)
-            , TRACKING_ID --DATATYPE VARCHAR(256)
-            , STATUS --DATATYPE VARCHAR(256)
-            , _FIVETRAN_DELETED --DATATYPE BOOLEAN
-            ,_FIVETRAN_SYNCED --DATATYPE TIMESTAMP_TZ(9)
+    select 
+            order_id 
+            , shipping_service 
+            , shipping_cost
+            , address_id
+            , created_at
+            , promo_id 
+            , estimated_delivery_at
+            , order_cost
+            , user_id 
+            , order_total 
+            , delivered_at
+            , tracking_id 
+            , status
+            , _fivetran_deleted
+            ,_fivetran_synced
     from {{ source("sql_server_dbo", "orders")}}
+    
 
 ),
 -- let´s change the datatype from those columns to be more representative
 casted_renamed as(
     select 
-            {{ dbt_utils.generate_surrogate_key(['ORDER_ID']) }} as ORDER_ID 
+            {{ dbt_utils.generate_surrogate_key(['order_id']) }} as order_id
             , case 
-                when SHIPPING_SERVICE <> '' then SHIPPING_SERVICE
+                when shipping_service <> '' then shipping_service
                 else 'Not_shipping_company'
-                end as SHIPPING_COMPANY
-            , SHIPPING_COST::decimal(10,2) as SHIPPING_COST 
-            , ADDRESS_ID 
-            , CREATED_AT::timestamp_ntz as CREATED_DATE
-            , {{ dbt_utils.generate_surrogate_key(['PROMO_ID']) }} as PROMO_ID
-            , coalesce(ESTIMATED_DELIVERY_AT::timestamp_ntz,'2000-01-01') as ESTIMATED_DELIVERY_DATE
-            , ORDER_COST::decimal(10,2) as ORDER_COST
-            , {{ dbt_utils.generate_surrogate_key(['USER_ID']) }} as CUSTOMER_ID
-            , ORDER_TOTAL::decimal(10,2) as ORDER_TOTAL
-            , coalesce(DELIVERED_AT::timestamp_ntz,'2000-01-01') as DELIVERED_DATE
+                end as shipping_company
+            , shipping_cost::decimal(10,2) as shipping_cost
+            , {{ dbt_utils.generate_surrogate_key(['address_id']) }} as address_id
+            , created_at::timestamp_ntz as order_created_at
             , case 
-                when TRACKING_ID <> '' then TRACKING_ID
+                when promo_id <> '' then {{ dbt_utils.generate_surrogate_key(['promo_id']) }}
+                else {{ dbt_utils.generate_surrogate_key(["'Unknown_promo'"]) }}
+                end as promo_id
+            , coalesce(estimated_delivery_at::timestamp_ntz,'2000-01-01') as estimated_delivery_at
+            , order_cost::decimal(10,2) as order_cost
+            , {{ dbt_utils.generate_surrogate_key(['user_id']) }} as customer_id
+            , order_total::decimal(10,2) as order_total
+            , coalesce(delivered_at::timestamp_ntz,'2000-01-01') as order_delivered_at
+            , case 
+                when tracking_id <> '' then tracking_id
                 else 'Not_tracking_assigned'
-                end as TRACKING_ID
-            , STATUS
-            , _FIVETRAN_DELETED as DELETE_DATE
-            , _FIVETRAN_SYNCED::timestamp_ntz as LOAD_DATE
+                end as tracking_id
+            , status
+            , _fivetran_deleted as is_data_deleted
+            , _fivetran_synced::timestamp_ntz as loaded_at
     from src_data 
     
 
@@ -48,3 +59,6 @@ casted_renamed as(
 
 select *
 from casted_renamed
+{% if is_incremental() %}
+        where loaded_at > (select max(loaded_at) from {{ this }} )
+{% endif %}

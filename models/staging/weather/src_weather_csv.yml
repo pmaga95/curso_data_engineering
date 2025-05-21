@@ -1,0 +1,45 @@
+version: 2
+
+sources:
+
+  - name: weather # name of the source 
+    description: "Source data got from weather_api schema from our bronze in snowflake "
+    schema: weather_api # this is the schema our raw data lives in
+    database: "{{ env_var('DBT_ENVIRONMENTS')}}_BRONZE_DB" # this is the name of our database
+
+    tables:
+      - name: weather_usa
+        description: "All details about the historical weather around all state in US"
+        columns:
+          - name: "Data.Precipitation"
+            description: "Amount of precipitation recorded, typically in inches or millimeters."
+
+          - name: "Date.Full"
+            description: "The full calendar date (YYYY-MM-DD) when the weather observation was recorded."
+
+          - name: "Date.Week of"
+            description: "The start date of the week (e.g., Monday) for grouping weather data into weekly summaries."
+
+          - name: "Date.Year"
+            description: "Four-digit year in which the weather observation occurred."
+
+          - name: "Station.City"
+            description: "City where the weather station is located and where the measurements were taken."
+
+          - name: "Station.State"
+            description: "U.S. state corresponding to the weather station's location."
+
+          - name: "Data.Temperature.Avg Temp"
+            description: "Average temperature for the day, usually in Fahrenheit."
+
+          - name: "Data.Temperature.Max Temp"
+            description: "Maximum temperature recorded for the day."
+
+          - name: "Data.Temperature.Min Temp"
+            description: "Minimum temperature recorded for the day."
+
+          - name: "Data.Wind.Direction"
+            description: "Primary wind direction observed, typically expressed as compass direction (e.g., N, SW)."
+
+          - name: "Data.Wind.Speed"
+            description: "Average wind speed recorded, generally in miles per hour (mph) or kilometers per hour (km/h)."

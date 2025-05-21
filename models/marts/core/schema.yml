@@ -1,0 +1,102 @@
+version: 2
+
+models:
+  - name: dim_addresses
+    description: "Dimension table containing standardized customer address information."
+    columns: []
+
+  - name: dim_customers
+    description: "Dimension table containing detailed customer information including contact and account history."
+    columns:
+      - name: customer_id
+        description: "Unique identifier for the customer."
+
+      - name: full_name
+        description: "Concatenation of the customer's first and last name."
+
+      - name: address_id
+        description: "Foreign key reference to the dim_addresses table."
+
+      - name: email
+        description: "Primary email address used by the customer."
+
+      - name: phone_number
+        description: "Primary phone number for the customer."
+
+      - name: customer_update_date
+        description: "Timestamp of the last update to the customer record."
+
+      - name: customer_created_date
+        description: "Timestamp of when the customer account was originally created."
+
+      - name: delete_date
+        description: "Date the customer record was marked as deleted, if applicable."
+
+      - name: load_date
+        description: "Timestamp of when this record was loaded into the data warehouse."
+
+      - name: number_of_orders
+        description: "Total number of orders placed by the customer."
+
+  - name: dim_products
+    description: "Dimension table with product details including pricing and inventory."
+    columns:
+      - name: product_id
+        description: "Unique identifier for the product."
+
+      - name: desc_product
+        description: "Description of the product."
+
+      - name: price
+        description: "Current retail price of the product."
+
+      - name: inventory
+        description: "Current number of units available in stock."
+
+      - name: is_data_deleted
+        description: "Boolean flag indicating if the product record has been deleted in source system."
+
+      - name: loaded_at
+        description: "Timestamp of when the product record was ingested."
+
+  - name: dim_promo
+    description: "Dimension table for promotional campaigns and discounts applied to orders."
+    columns: []
+
+  - name: fct_budget
+    description: "Fact table containing monthly budgeted inventory and sales metrics by product."
+    columns: []
+
+  - name: fct_orders
+    description: "Fact table capturing order-level metrics such as cost, total, shipping, and customer linkage."
+    columns:
+      - name: order_id
+        description: "Primary key for the order."
+        data_tests:
+          - not_null
+
+      - name: customer_id
+        description: "Foreign key to the customer placing the order."
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_customers')
+              field: customer_id
+
+      - name: address_id
+        description: "Shipping address used for the order."
+        tests:
+          - relationships:
+              to: ref('stg_sql_server_dbo__addresses')
+              field: address_id
+
+      - name: promo_id
+        description: "Optional foreign key to the promotion applied."
+        tests:
+          - relationships:
+              to: ref('stg_sql_server_dbo__promo')
+              field: promo_id
+
+  - name: fct_event
+    description: "This is a factless fact table that stores individual customer interactions (events) for behavioral analytics."
+    columns: []

@@ -5,11 +5,11 @@ with src_budget as (
 
 renamed_casted as (
     select
-        {{ dbt_utils.generate_surrogate_key(['month','product_id'])}} as budget_id -- datatype number(38,0) and is the primary_key
-        , quantity        -- datatype number(38,0)
-        , month           -- datatype date,
-        , product_id      -- varchar(256)
-        , _fivetran_synced as loaded_timestamp -- timestamp_tz(9)
+        --{{ dbt_utils.generate_surrogate_key(['MONTH','PRODUCT_ID'])}} as budget_id -- datatype number(38,0) and is the primary_key
+          quantity      
+        , month          
+        , product_id     
+        , _fivetran_synced as loaded_at 
     from  src_budget
 )
 
