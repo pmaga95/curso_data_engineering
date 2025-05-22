@@ -29,6 +29,7 @@ with src_data as(
 casted_renamed as(
     select 
             {{ dbt_utils.generate_surrogate_key(['order_id']) }} as order_id
+            -- Fill with default value for shipping_service
             , case 
                 when shipping_service <> '' then shipping_service
                 else 'Not_shipping_company'
@@ -50,8 +51,8 @@ casted_renamed as(
                 else 'Not_tracking_assigned'
                 end as tracking_id
             , status
-            , _fivetran_deleted as is_data_deleted
-            , _fivetran_synced::timestamp_ntz as loaded_at
+          --  , _fivetran_deleted as is_data_deleted
+            , _fivetran_synced::timestamp_ntz as order_loaded_at
     from src_data 
     
 
@@ -60,5 +61,5 @@ casted_renamed as(
 select *
 from casted_renamed
 {% if is_incremental() %}
-        where loaded_at > (select max(loaded_at) from {{ this }} )
+        where order_loaded_at > (select max(order_loaded_at) from {{ this }} )
 {% endif %}

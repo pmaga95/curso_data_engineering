@@ -9,7 +9,7 @@ with orders as (
     select * 
     from {{ ref("stg_sql_server_dbo__orders")}}
     {% if is_incremental() %}
-      where loaded_at > (select max(loaded_at) from {{ this }})
+        where order_loaded_at > (select max(order_loaded_at) from {{ this }})
     {% endif %}
 ),
 -- getting our order_items staging model
@@ -17,13 +17,13 @@ order_items as (
     select *
     from {{ ref("stg_sql_server_dbo__order_items")}}
     {% if is_incremental() %}
-      where loaded_at > (select max(loaded_at) from {{ this }})
+      where order_item_loaded_at > (select max(order_item_loaded_at) from {{ this }})
     {% endif %}
 )
 ,
 order_items_grained as (
     select
-         order_items.order_item_id
+         order_items.order_item_id -- The surrogate key got from a order_item
        , orders.order_id
        , orders.customer_id
        , order_items.product_id
@@ -38,6 +38,8 @@ order_items_grained as (
        , order_items.quantity
        , product.price as unit_price
        , product.price * order_items.quantity as subtotal_item_per_order
+       , order_loaded_at
+       , order_item_loaded_at
 
     from orders
     left join order_items

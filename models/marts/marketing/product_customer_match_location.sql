@@ -61,7 +61,7 @@ orders as (
         customer_id
       , product_id
       , count(*) as order_count
-    from {{ ref('fct_orders')}}
+    from {{ ref('fct_order_items')}}
     group by customer_id, product_id  
 ),
 
