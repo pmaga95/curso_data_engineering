@@ -9,7 +9,6 @@ with stg_events as (
         , web_page_url
         , event_created_at
         , loaded_at
-        , is_data_deleted
         
     from {{ ref('stg_sql_server_dbo__events') }}
     ),

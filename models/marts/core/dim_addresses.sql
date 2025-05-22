@@ -4,10 +4,9 @@ with stg_address as (
         , desc_address
         , state
         , country
-        , is_data_deleted
         , loaded_at
     from {{ ref('stg_sql_server_dbo__addresses') }}
 )
 
-select distinct state
+select *
 from stg_address

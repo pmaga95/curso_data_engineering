@@ -3,7 +3,7 @@ with customer_location as (
         customer.address_id
       , customer_id
       , state
-    from {{ ref('dim_customers')}} customer
+    from {{ ref('dim_customers') }} customer
     left join {{ ref('dim_addresses')}} address
     using(address_id)
 ),
@@ -43,8 +43,8 @@ customer_weather as (
     on lower(cl.state) = lower(lw.state)
 ),
 
--- Recommend products(plants) matching the customer's climate
-recommend_plants as (
+-- suited products(plants) and the customer's location related to climate
+suite_place as (
     select
        pc.product_id
       , pc.desc_product
@@ -54,9 +54,31 @@ recommend_plants as (
     from customer_weather as cw
     join plant_catalog pc
     on cw.avg_temperature between pc.preferred_min_temperature and pc.preferred_max_temperature
+),
+
+orders as (
+    select
+        customer_id
+      , product_id
+      , count(*) as order_count
+    from {{ ref('fct_orders')}}
+    group by customer_id, product_id  
+),
+
+final as (
+    select
+        suited.customer_id
+      , suited.state
+      , suited.product_id
+      , suited.desc_product
+      , coalesce(ord.order_count,0) as matched_order_count
+    from suite_place suited
+    left join orders ord
+    on suited.customer_id = ord.customer_id
+    and suited.product_id = ord.product_id
 )
 
 select *
-from recommend_plants
+from final
 
 

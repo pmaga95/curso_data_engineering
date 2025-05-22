@@ -7,7 +7,6 @@ with stg_customer as (
       , phone_number
       , customer_update_at
       , customer_created_at
-      , is_data_deleted
       , loaded_at
       , total_orders
     from {{ref('stg_sql_server_dbo__users')}} customer
