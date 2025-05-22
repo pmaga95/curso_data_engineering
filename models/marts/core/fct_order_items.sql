@@ -30,14 +30,14 @@ order_items_grained as (
        , orders.status
        , orders.shipping_company
        , orders.address_id
-       , orders.order_created_at
-       , orders.promo_id
+       , to_date(orders.order_created_at) as order_date
+      -- , to_time(orders.order_created_at) as order_time
        , orders.estimated_delivery_at
        , orders.order_delivered_at
-       -- facts 
+       -- our facts measures
        , order_items.quantity
-       , product.price as unit_price
-       , product.price * order_items.quantity as subtotal_item_per_order
+       , product.price as unit_price_usd
+       , product.price * order_items.quantity as subtotal_item_per_order_usd
        , order_loaded_at
        , order_item_loaded_at
 
@@ -48,9 +48,9 @@ order_items_grained as (
     using(product_id)
     left join {{ ref('stg_sql_server_dbo__addresses')}} address
     using(address_id)
-    left join {{ ref('stg_sql_server_dbo__promo')}} promo
-    using(promo_id)
-    order by orders.order_created_at
+    left join {{ ref('dim_date') }} date
+    on order_date = date.date_key
+    order by order_date
 
 )
 
