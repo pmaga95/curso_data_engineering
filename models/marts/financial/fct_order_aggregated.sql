@@ -1,4 +1,9 @@
 
+{{ config(
+    materialized = 'incremental',
+    unique_key = 'order_id', 
+    on_schema_change = 'fail'
+) }}
 with stg_orders as (
     select
           order_id
@@ -8,7 +13,11 @@ with stg_orders as (
         , order_cost
         , order_total
         , order_created_at::date as order_date
+        , order_loaded_at
     from {{ ref('stg_sql_server_dbo__orders') }}
+     {% if is_incremental() %}
+        where order_loaded_at > (select max(order_loaded_at) from {{ this }})
+    {% endif %}
 ),
 
 order_aggregates as (

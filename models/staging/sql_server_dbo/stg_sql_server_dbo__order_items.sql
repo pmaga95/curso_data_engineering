@@ -16,8 +16,8 @@ casted_renamed as (
         , {{dbt_utils.generate_surrogate_key(['order_id'])}} as order_id
         , {{dbt_utils.generate_surrogate_key(['product_id'])}} as product_id
         , quantity
-        , _fivetran_deleted as is_data_deleted
-        , _fivetran_synced::timestamp_ntz as loaded_at
+     --   , _fivetran_deleted as is_data_deleted
+        , _fivetran_synced::timestamp_ntz as order_item_loaded_at
     from src_data 
     
 )
@@ -25,7 +25,7 @@ casted_renamed as (
 select *
 from casted_renamed
   {% if is_incremental() %}
-       where  loaded_at > (select max(loaded_at) from {{ this }}) 
+       where  order_item_loaded_at > (select max(order_item_loaded_at) from {{ this }}) 
 {% endif %}
 
 

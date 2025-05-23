@@ -67,11 +67,17 @@ models:
     description: "Fact table containing monthly budgeted inventory and sales metrics by product."
     columns: []
 
-  - name: fct_orders
-    description: "Fact table capturing order-level metrics such as cost, total, shipping, and customer linkage."
+  - name: fct_order_items
+    description: "Fact table capturing order-item-level metrics such as cost per item, unity_price and quantity."
     columns:
+      - name: order_item_id
+        description: "The surrogate key for the fact table(combination of order_id and product_id)"
+        data_tests:
+          - unique
+          - not_null
+          
       - name: order_id
-        description: "Primary key for the order."
+        description: "Foreing key for the order."
         data_tests:
           - not_null
 

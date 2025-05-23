@@ -4,7 +4,6 @@ with stg_product as (
       , desc_product
       , price
       , inventory
-      , is_data_deleted
       , loaded_at
     from {{ ref('stg_sql_server_dbo__products') }}
 ),
@@ -29,9 +28,8 @@ select
       , climate_summary
       , price
       , inventory
-      , is_data_deleted
       , loaded_at
 
 from stg_product as product
-left join stg__plant as plant
+left join stg_plant as plant
 on product.desc_product = plant.plant_name

@@ -9,7 +9,7 @@ with orders as (
     select * 
     from {{ ref("stg_sql_server_dbo__orders")}}
     {% if is_incremental() %}
-      where loaded_at > (select max(loaded_at) from {{ this }})
+        where order_loaded_at > (select max(order_loaded_at) from {{ this }})
     {% endif %}
 ),
 -- getting our order_items staging model
@@ -17,27 +17,29 @@ order_items as (
     select *
     from {{ ref("stg_sql_server_dbo__order_items")}}
     {% if is_incremental() %}
-      where loaded_at > (select max(loaded_at) from {{ this }})
+      where order_item_loaded_at > (select max(order_item_loaded_at) from {{ this }})
     {% endif %}
 )
 ,
 order_items_grained as (
     select
-         order_items.order_item_id
+         order_items.order_item_id -- The surrogate key got from a order_item
        , orders.order_id
        , orders.customer_id
        , order_items.product_id
        , orders.status
        , orders.shipping_company
        , orders.address_id
-       , orders.order_created_at
-       , orders.promo_id
+       , to_date(orders.order_created_at) as order_date
+      -- , to_time(orders.order_created_at) as order_time
        , orders.estimated_delivery_at
        , orders.order_delivered_at
-       -- facts 
+       -- our facts measures
        , order_items.quantity
-       , product.price as unit_price
-       , product.price * order_items.quantity as subtotal_item_per_order
+       , product.price as unit_price_usd
+       , product.price * order_items.quantity as subtotal_item_per_order_usd
+       , order_loaded_at
+       , order_item_loaded_at
 
     from orders
     left join order_items
@@ -46,9 +48,9 @@ order_items_grained as (
     using(product_id)
     left join {{ ref('stg_sql_server_dbo__addresses')}} address
     using(address_id)
-    left join {{ ref('stg_sql_server_dbo__promo')}} promo
-    using(promo_id)
-    order by orders.order_created_at
+    left join {{ ref('dim_date') }} date
+    on order_date = date.date_key
+    order by order_date
 
 )
 

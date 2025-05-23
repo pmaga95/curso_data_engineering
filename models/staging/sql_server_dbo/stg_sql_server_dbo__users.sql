@@ -1,6 +1,7 @@
 with src_data as (
     select *
-    from {{ source("sql_server_dbo", "users")}}
+    from {{ ref('src_users_snapshot')}}
+    where dbt_valid_to is null
 ),
 -- making some casting and concat the first and last name to be a unique column
 casted_renamed as (
@@ -8,12 +9,12 @@ casted_renamed as (
         {{ dbt_utils.generate_surrogate_key(['user_id']) }} as customer_id
         , concat(first_name,' ',last_name) as full_name
         , updated_at::timestamp_ntz as customer_update_at
-        , address_id
+        , {{ dbt_utils.generate_surrogate_key(['address_id']) }} as address_id
         , created_at::timestamp_ntz as customer_created_at
         , phone_number 
         --, coalesce(co.NUMBER_OF_ORDERS, 0) as TOTAL_ORDERS
         , email 
-        , _fivetran_deleted as is_data_deleted
+       --, _fivetran_deleted as is_data_deleted
         , _fivetran_synced::timestamp_ntz as loaded_at
     from src_data
 )

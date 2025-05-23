@@ -23,7 +23,7 @@ casted_renamed as (
     select 
         {{ dbt_utils.generate_surrogate_key(['promo_id']) }} as promo_id
         , promo_id as desc_promo
-        , discount::decimal(3) as discount_euro
+        , discount::decimal(3) as discount_usd
         , status as promo_status
         , _fivetran_deleted as is_data_deleted
         , _fivetran_synced::timestamp_ntz as loaded_at

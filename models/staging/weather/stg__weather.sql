@@ -17,7 +17,23 @@ casted as (
        , "Data.Wind.Direction"::float as wind_direction
        , "Data.Wind.Speed"::float as wind_speed
     from src_data
+),
+-- convert into celsius from fahrenheit
+convert_temperature as (
+    select 
+        precipitation
+       , full_date
+       , week_start_date
+       , year
+       , city
+       , state
+       , round({{ f_to_c('avg_temperature') }})::int as avg_temperature_c
+       , round({{ f_to_c('max_temperature') }})::int as max_temperature_c
+       , round({{ f_to_c('min_temperature') }})::int as min_temperature_c
+       , wind_direction
+       , wind_speed
+    from casted
 )
 
 select *
-from casted
+from convert_temperature
