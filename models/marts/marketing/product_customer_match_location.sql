@@ -80,5 +80,6 @@ final as (
 
 select *
 from final
+where matched_order_count > 0
 
 
