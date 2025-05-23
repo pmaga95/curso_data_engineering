@@ -1,5 +1,5 @@
 
-SELECT *
-FROM {{ ref('fct_orders') }} o
-LEFT JOIN {{ ref('dim_addresses') }} a ON o.address_id = a.address_id
-WHERE a.state IS NULL OR a.state = 'Not_state'
+select *
+from {{ ref('fct_order_items') }} order_items
+left join {{ ref('dim_addresses') }} address ON order_items.address_id = address.address_id
+where a.state is null or a.state = 'Not_state'
