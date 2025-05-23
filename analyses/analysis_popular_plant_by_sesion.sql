@@ -28,7 +28,7 @@ customer_state as (
 weather_on_order_date as (
     select 
         w.state,
-        w.date,
+        w.full_date,
         w.avg_temperature_c
     from {{ ref('dim_weather') }} w
 ),
