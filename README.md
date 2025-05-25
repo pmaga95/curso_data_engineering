@@ -53,7 +53,7 @@ Budget and promotional planning through aggregated sales and discount insights.
 | `product_customer_match_location` | Recommendations based on weather and plant compatibility              |
 
 # Lineage
-![](lineage)
+![](lineage.png)
 # Uses cases
 Match plant products with customers based on average state temperatures and plant tolerance range.
 
