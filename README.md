@@ -1,4 +1,4 @@
-# curso_data_engineering
+# Curso data engineering - Cívica
 
 This project is related to my Final Project related to Cívica Data Engineering course. 
 My Linkedin for reached out me linkedin.com/in/jose-magalhaes-39a50718a
