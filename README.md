@@ -13,6 +13,7 @@ Budget and promotional planning through aggregated sales and discount insights.
 
 ## Project Structure
 
+```plaintext
 ├── models/
 │   ├── staging/  # Raw staging layer (stg_)
 |   |          ├── google_sheets/
@@ -31,6 +32,7 @@ Budget and promotional planning through aggregated sales and discount insights.
 ├── analyses/                 # ad hoc queries and exploration
 ├── dbt_project.yml
 └── packages.yml
+```
 
 # DER
 
