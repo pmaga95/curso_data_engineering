@@ -1,7 +1,7 @@
 # Curso data engineering
 
 This project is related to my Final Project related to Cívica Data Engineering course. 
-My Linkedin for reached out me linkedin.com/in/jose-magalhaes-39a50718a
+My ![Linkedin](linkedin.com/in/jose-magalhaes-39a50718a) for reached out me. 
 
 # Retail Web plant sales Analytics - dbt and Snowflake project.
 
