@@ -35,10 +35,10 @@ Budget and promotional planning through aggregated sales and discount insights.
 ```
 
 # DER
-![](Untitled Diagram-5-9-der-2.jpg)
+![](der.jpg)
 
 # Dimensional Model
-
+![](modelling.jpg)
 # Core Components
 | Model                             | Purpose                                                               |
 | --------------------------------- | --------------------------------------------------------------------- |
