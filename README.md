@@ -52,6 +52,8 @@ Budget and promotional planning through aggregated sales and discount insights.
 | `fct_web_tracking_events`         | Web session logs to analyze customer navigation and behavior          |
 | `product_customer_match_location` | Recommendations based on weather and plant compatibility              |
 
+# Lineage
+
 # Uses cases
 Match plant products with customers based on average state temperatures and plant tolerance range.
 
